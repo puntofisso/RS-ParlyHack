@@ -14,6 +14,19 @@
         <!-- project js and css -->
         <script src="js/parly.js"></script>
         <link href="css/parly.css" rel="stylesheet" />
+        
+        <script>
+            
+            $(function() {
+               spinner(true);
+               setTimeout(function() { spinner(false); }, 3000);
+                
+                $('#cancelretrieve').click(function() {
+                    window.location = 'search.html';
+                });
+            });
+            
+        </script>
     </head>
     <body>
         
@@ -22,17 +35,16 @@
             <a class="brand" href="champion.html">Champion</a>
             <ul class="nav">
               <li><a href="search.html">Search</a></li>
-              <li class="active"><a href="team.html">Team</a></li>
-              <li><a href="data-sources.html">Sources</a></li>
+              <li><a href="team.html">Team</a></li>
+              <li class="active"><a href="data-sources.html">Sources</a></li>
             </ul>
           </div>
         </div>  
 
         <ul class="breadcrumb">
             <li><a href="champion.html">Champion</a> <span class="divider">/</span></li>
-            <li class="active"><a href="Team.html">Team</a></li>
+            <li class="active"><a href="search.html">Data sources</a></li>
         </ul>
-
 
         
  
