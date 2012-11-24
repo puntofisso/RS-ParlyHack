@@ -62,4 +62,10 @@ function queryTheyWorkForYou($id) {
 	return $output;
 }
 
+function getTWFYid($uid) {
+
+}
+
+function mySQL()
+
 ?>
