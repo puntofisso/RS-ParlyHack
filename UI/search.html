@@ -1,0 +1,235 @@
+<html>
+    <head>
+        <title>ParlyHack (Team: Whip)</title>
+        
+        <!-- Bootstrap CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
+        
+        <!-- Bootstrap JS --> 
+        <script src="js/jquery-latest.js"></script>
+        <script src="js/jquery.center.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        
+        <!-- project js and css -->
+        <script src="js/parly.js"></script>
+        <link href="css/parly.css" rel="stylesheet" />
+
+        <script>
+            var searchCancelled = false;
+            
+            $(function() {
+                $('#send-search').click(function() {
+                    clearResults();
+                    doSearch();
+                });
+                
+                $('#cancelsearch').click(function() {
+                    searchCancelled = true;
+                    spinner(false);
+                });
+            });
+
+            /**
+             * Removes all rows except the header.
+             **/
+            function clearResults() {
+                $("table#results-table").find("tr:gt(0)").remove();
+            }
+            
+            /**
+             * Retrieves interests, parses into an Array of strings.
+             **/
+            function doSearch() {
+                try {
+                    var interestsText = $('#interests').val();
+                    var interests = interestsText.split(',');
+                    submitSearch(interests);
+
+                } catch (e) {
+                    alert(e);
+                    spinner(false);
+                }
+            }
+            
+            /**
+             * Submits a search, interests is an Array of strings.
+             **/
+            function submitSearch(interests) {
+                spinner(true);
+                setTimeout(function() { addResults(getDummyResults()); }, 3000);
+            }
+
+            function getDummyResults() {
+                var res = new Array();
+                
+                res[0] = new Object();
+                res[0].score = 90;
+                res[0].name = "Rumpold";
+                res[0].uid = '000001';
+                
+                res[1] = new Object();
+                res[1].score = 75;
+                res[1].name = "Winnie the Pooh";
+                res[1].uid = '000002';
+                
+                res[2] = new Object();
+                res[2].score = 45;
+                res[2].name = "Thomas the Tank Engine";
+                res[2].uid = '000003';
+                
+                return res;
+            }
+            
+            /**
+             * result.score, result.name, result.uid
+             **/
+            function addResults(results) {
+                if (searchCancelled) {
+                    searchCancelled = false;
+                    return;
+                }
+                
+                try {
+                    if (results.length == 0) {
+                        $("#results-table").fadeOut('fast');
+                        $("#no-results").fadeIn('slow');
+                        spinner(false);
+                        return;
+                    }
+                    
+                    $.each(results, function(index, value) { 
+                        var barStyle = value.score > 49 ? 'bar-success' : 'bar-warning';
+                        
+                        var row = '<tr id="result-' + value.uid +'">' +
+                            '<td><div class="progress">' +
+                                '<div class="bar ' + barStyle +'" style="width: ' + value.score + '%;"></div>' +
+                            '</div></td>' +
+                            '<td>' + value.name + '</td>' +
+                            '<td><i class="icon-chevron-right pull-right"></i></td>' +
+                            '</tr>';
+                        $('#results-table').append(row);
+                        
+                        $('#result-' + value.uid).attr('data-link', 'result.html?id=' + value.uid);
+                        $('#result-' + value.uid).click(function() {
+                            window.location = $(this).attr('data-link');
+                        });
+                    });
+                    
+                    $("#results-table").fadeIn('slow');
+                    spinner(false);
+
+                } catch (e) {
+                    alert(e);
+                    spinner(false);
+                }
+            }
+            
+        </script>
+        
+    </head>
+    <body>
+        
+        <div class="navbar">
+          <div class="navbar-inner">
+            <a class="brand" href="#">Team Whip</a>
+            <ul class="nav">
+              <li class="active"><a href="champion.html">Champion</a></li>
+              <li><a href="team.html">Team</a></li>
+            </ul>
+          </div>
+        </div>  
+
+        <ul class="breadcrumb">
+            <li><a href="champion.html">Champion</a> <span class="divider">/</span></li>
+            <li class="active"><a href="search.html">Search</a> <!--<span class="divider">/</span>--></li>
+        </ul>
+
+        <!-- the searching spinner -->
+        <div id="spinner" class="modal hide fade" data-backdrop="static" data-keyboard="false">
+          <div class="modal-header">
+            <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+            <h3>Searching...</h3>
+          </div>
+          <div class="modal-body">
+            <p><img src="images/spinner.gif" style="float: left; margin-right: 10px;" />
+                We are analysing our data right now to determine
+                who best shares your interests in parliament.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <a id="cancelsearch" href="#" class="btn btn-primary">Cancel</a>
+          </div>
+        </div>
+        
+        <div class="row-fluid">
+            <div class="span6 padded">
+
+                <!-- introduction -->
+                <div class="hero-unit">
+                  <h1>Find your Champion</h1>
+                  <p>
+                    Tell us about your interests to help us
+                    find your Champion in Parliament.
+                  </p>
+
+                  <div id="more-info" class="collapse">
+                    We'll search through parliamentary debates using
+                    topic analysis to determine who has been talking
+                    about what (and for how long), and then combine
+                    that with members own declared interests to find
+                    out just who cares about what you care about the most.
+                  </div>
+
+                  <p>
+                    <a class="btn toggle-text-on-click" data-toggle="collapse" data-target="#more-info" data-text="Learn less">
+                      Learn more
+                    </a>
+                  </p>
+                  
+                </div>
+
+                <form class="form-horizontal">
+                    <fieldset>
+                        <legend>
+                            Your interests
+                        </legend>
+                        
+                        <div class="control-group">
+                          <label class="control-label" for="interests">Interests</label>
+                          <div class="controls">
+                            <input type="text" id="interests" placeholder="interests,comma,separated" />
+                          </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <div class="controls">
+                                <button id="send-search" type="button" class="btn btn-primary btn-large">Search</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+                    
+            </div><!-- /left-half -->
+            <div class="span6 padded">
+                
+                <table id="results-table" class="table table-hover" style="table-layout: fixed; display: none;">
+                    <thead>
+                        <tr>
+                            <th>Score</th>
+                            <th>Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+                
+                <div id="no-results" class="alert alert-error" style="display: none;">
+                    No results were found for your search. Please try again.
+                </div>
+                
+            </div><!-- /right-half -->
+            
+        </div><!-- /row -->
+        
+    </body>
+</html>
