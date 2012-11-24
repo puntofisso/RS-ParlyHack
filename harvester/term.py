@@ -40,13 +40,18 @@ for mp in d:
     speakername = d[mp]["speakername"]
     speakerid = str(mp)
     content = d[mp]["content"]
+    length = str(len(content))
     l = extractor(content)
-    print speakername + ": " + str(len(l)) 
-
+    allwords = str(len(l))
+    for word in l:
+        x = word[0]
+        y = word[1]
+        z = word[2]
+        print '"' + speakername + '","' + speakerid + '","' + str(x) + '","' + str(y) + '","' + str(z) + '","' + allwords + '"'
 
 #x = sorted(l, key=lambda tup: tup[1])
 
-#nowords = ['constituency','Minister','honourable','Prime Minister','Prime','hon','right','friend']
+
 
 
 #for i in x:
