@@ -16,6 +16,8 @@
         <link href="css/parly.css" rel="stylesheet" />
 
         <script>
+            var searchCancelled = false;
+            
             $(function() {
                 $('#send-search').click(function() {
                     clearResults();
@@ -23,6 +25,7 @@
                 });
                 
                 $('#cancelsearch').click(function() {
+                    searchCancelled = true;
                     spinner(false);
                 });
             });
@@ -46,14 +49,6 @@
                 } catch (e) {
                     alert(e);
                     spinner(false);
-                }
-            }
-            
-            function spinner(on) {
-                if (on) {
-                    $('#spinner').modal('show');
-                } else {
-                    $('#spinner').modal('hide');
                 }
             }
             
@@ -90,6 +85,11 @@
              * result.score, result.name, result.uid
              **/
             function addResults(results) {
+                if (searchCancelled) {
+                    searchCancelled = false;
+                    return;
+                }
+                
                 try {
                     if (results.length == 0) {
                         $("#results-table").fadeOut('fast');
@@ -101,16 +101,21 @@
                     $.each(results, function(index, value) { 
                         var barStyle = value.score > 49 ? 'bar-success' : 'bar-warning';
                         
-                        var row = '<tr>' +
+                        var row = '<tr id="result-' + value.uid +'">' +
                             '<td><div class="progress">' +
                                 '<div class="bar ' + barStyle +'" style="width: ' + value.score + '%;"></div>' +
                             '</div></td>' +
                             '<td>' + value.name + '</td>' +
                             '<td><i class="icon-chevron-right pull-right"></i></td>' +
                             '</tr>';
-    
                         $('#results-table').append(row);
+                        
+                        $('#result-' + value.uid).attr('data-link', 'result.html?id=' + value.uid);
+                        $('#result-' + value.uid).click(function() {
+                            window.location = $(this).attr('data-link');
+                        });
                     });
+                    
                     $("#results-table").fadeIn('slow');
                     spinner(false);
 
@@ -163,7 +168,7 @@
                 <div class="hero-unit">
                   <h1>Find my Champion</h1>
                   <p>
-                    Tell us about your interests to help you
+                    Tell us about your interests to help us
                     find your Champion in Parliament.
                   </p>
                   <p>

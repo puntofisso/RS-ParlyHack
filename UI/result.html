@@ -1,0 +1,66 @@
+<html>
+    <head>
+        <title>ParlyHack (Team: Whip)</title>
+        
+        <!-- Bootstrap CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
+        
+        <!-- Bootstrap JS --> 
+        <script src="js/jquery-latest.js"></script>
+        <script src="js/jquery.center.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        
+        <!-- project js and css -->
+        <script src="js/parly.js"></script>
+        <link href="css/parly.css" rel="stylesheet" />
+        
+        <script>
+            
+            $(function() {
+               spinner(true);
+               setTimeout(function() { spinner(false); }, 3000);
+                
+                $('#cancelretrieve').click(function() {
+                    window.location = 'search.html';
+                });
+            });
+            
+        </script>
+    </head>
+    <body>
+        
+        <div class="navbar">
+          <div class="navbar-inner">
+            <a class="brand" href="#">Team Whip</a>
+            <ul class="nav">
+              <li class="active"><a href="search.html">Champion</a></li>
+              <li><a href="team.html">Team</a></li>
+            </ul>
+          </div>
+        </div>  
+
+        <ul class="breadcrumb">
+            <li><a href="search.html">Search</a> <span class="divider">/</span></li>
+            <li class="active"><a href="#">Result</a></li>
+        </ul>
+
+        <!-- the searching spinner -->
+        <div id="spinner" class="modal hide fade" data-backdrop="static" data-keyboard="false">
+          <div class="modal-header">
+            <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+            <h3>Retrieving data...</h3>
+          </div>
+          <div class="modal-body">
+            <p><img src="images/spinner.gif" style="float: left; margin-right: 10px;" />
+                Please wait while we retrieve data about your selected candidate.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <a id="cancelretrieve" href="#" class="btn btn-primary">Cancel</a>
+          </div>
+        </div>
+        
+ 
+    </body>
+</html>
