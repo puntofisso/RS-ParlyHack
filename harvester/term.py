@@ -2,13 +2,11 @@ from topia.termextract import extract
 import operator
 import parse
 
-MPs = dict()
-
 
 extractor = extract.TermExtractor()
 filelist = open('xmlfiles.txt','r').readlines()
 
-
+d = dict()
 for myfile in filelist:
     filelocation = myfile.strip()
     d = parse.parseXML(filelocation)
@@ -29,16 +27,21 @@ for myfile in filelist:
             count = 0
 
         #print elem + ": " + str(name) +": " +str(count)
-
-for elem in d:
-    name = d[elem]["speakername"]
-    content = str(len(d[elem]["content"]))
-    print name,content
+#for elem in d:
+#    name = d[elem]["speakername"]
+#    content = str(len(d[elem]["content"]))
+#    print name,content
 
 # get the content
 #linestring = open('test.txt', 'r').read()
-#l = extractor(linestring)
 
+MPs = dict()
+for mp in d:
+    speakername = d[mp]["speakername"]
+    speakerid = str(mp)
+    content = d[mp]["content"]
+    l = extractor(content)
+    print speakername + ": " + str(len(l)) 
 
 
 #x = sorted(l, key=lambda tup: tup[1])
