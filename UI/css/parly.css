@@ -4,3 +4,15 @@ div.padded {
     padding-top: 0px;
     padding-bottom: 5px;
 }
+
+.shadow-box {
+    -moz-box-shadow: 0 0 5px #888;
+    -webkit-box-shadow: 0 0 5px #888;
+    box-shadow: 0 0 5px #888;
+}
+
+.shadow-box-heavy {
+    box-shadow: 5px 5px 10px #888;
+    -webkit-box-shadow: 5px 5px 10px #888;
+    -moz-box-shadow: 5px 5px 10px #888;
+}

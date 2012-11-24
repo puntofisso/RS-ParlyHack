@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <title>ParlyHack (Team: Whip)</title>
+        
+        <!-- Bootstrap CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
+        
+        <!-- Bootstrap JS --> 
+        <script src="js/jquery-latest.js"></script>
+        <script src="js/jquery.center.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        
+        <!-- project js and css -->
+        <script src="js/parly.js"></script>
+        <link href="css/parly.css" rel="stylesheet" />
+        
+        <style>
+            body,html { height: 100%; width: 100%; }
+            .centered { width: 100%; text-align: center; }
+        </style>
+        <script>            
+            $(function() {
+               $('#champ').load(function() { $('#champ').center(); });
+               
+               setTimeout(function() {
+                   $('#champ').fadeIn('slow');
+                }, 500);
+               
+               setTimeout(function() {
+                    $('#champ').fadeOut('fast');
+                }, 3500);
+
+               setTimeout(function() {
+                    window.location = 'search.html';
+                }, 4000);
+
+            });
+        </script>
+    </head>
+    <body>
+
+        <!--    
+        <div class="navbar">
+          <div class="navbar-inner">
+            <a class="brand" href="#">Team Whip</a>
+            <ul class="nav">
+              <li class="active"><a href="champion.html">Champion</a></li>
+              <li><a href="team.html">Team</a></li>
+            </ul>
+          </div>
+        </div>  
+        
+        <ul class="breadcrumb">
+            <li class="active"><a href="champion.html">Champion</a></li>
+        </ul>
+        -->
+
+        <img src="images/champion-with-subtitle-big.jpg" id="champ"
+             class="shadow-box-heavy" style="border: solid 1px #000000; display: none;" />
+        
+    </body>
+</html>
