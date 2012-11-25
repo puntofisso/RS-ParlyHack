@@ -27,7 +27,7 @@ function searchMP($keys) {
 	$a = array();
 
 	foreach ($keysARR as $thiskey) {
-		$query = "SELECT name, keyword, sum(x) as summy, total, sum(x)/total*100 AS ratio from Keywords WHERE keyword='". $thiskey . "' group by keyword, name ORDER by ratio LIMIT 0,10";
+		$query = "SELECT name, keyword, sum(x) as summy, total, sum(x)/total*100 AS ratio from Keywords WHERE keyword='". $thiskey . "' group by keyword, name ORDER by ratio LIMIT 0,20";
 		$result = mySQLquery($query);
 
 		while($row = mysql_fetch_assoc( $result )) {
@@ -68,14 +68,27 @@ function queryTheyWorkForYou($id) {
 
         //return the transfer as a string 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-
-        // $output contains the output string 
         $output = curl_exec($ch); 
-	
-        // close curl resource to free up system resources 
         curl_close($ch);  
+	$arr = json_decode($output,true);
 
-	return $output;
+	$myout = array();
+
+	foreach ($arr as $entry) {
+		if (strstr($entry["left_house"],"9999")) {
+			$myout["lastname"] = $entry["last_name"];
+			$myout["firstname"] = $entry["first_name"];
+			$myout["constituency"] = $entry["constituency"];
+			$myout["TWFYimage"] = $entry["image"];
+			$myout["TWFYid"] = $pid;
+			$myout["enteredhouse"] = $entry["entered_house"];
+			//$myout[""] = $entry[""];
+		}
+	}
+
+	return json_encode($myout);
+
+	
 }
 
 function getTWFYid($uid) {
