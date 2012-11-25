@@ -36,6 +36,7 @@
              **/
             function clearResults() {
                 $("table#results-table").find("tr:gt(0)").remove();
+                $('#no-results').hide();
             }
             
             /**
@@ -154,6 +155,7 @@
                         });
                     });
                     
+                    $('#no-results').hide();
                     $("#results-table").fadeIn('slow');
                     spinner(false);
 
