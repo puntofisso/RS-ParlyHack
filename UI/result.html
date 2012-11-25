@@ -11,6 +11,10 @@
         <script src="js/jquery.center.js"></script>
         <script src="js/bootstrap.min.js"></script>
         
+        <!-- D3 -->
+        <script src="http://d3js.org/d3.v2.js"></script>
+        <script src="js/d3.layout.cloud.js"></script>
+
         <!-- project js and css -->
         <script src="js/parly.js"></script>
         <script src="js/champion-api.js"></script>
@@ -56,6 +60,8 @@
                 var MP_depts = data['depts'];
                 var MP_subjects = data['subjects'];
                 var MP_expenses2009 = data['expenses2009'];
+                var MP_median_wage = data['medianweeklywage'];
+                var MP_unemploymentrate = data['unemploymentrate'];
                 
                 $('#photo').attr('src', MP_img_url);
                 $('span.name').text(MP_name);
@@ -67,7 +73,64 @@
                 $('#depts').text(MP_depts);
                 $('#subjects').text(MP_subjects);
                 $('#expenses2009').text(MP_expenses2009);
+                $('#wage').text(MP_median_wage);
+                $('#unemployment').text(MP_unemploymentrate);
+                
+                doCloud(data['keywords']);
             }
+            
+            function doCloud(data) {
+                try {
+                    var mapping = new Array();
+                    var maxSize = 0;
+                    
+                    $.each(data, function(index, value) {
+                        if (value > maxSize) { maxSize = value; }
+                    });
+                    
+                    $.each(data, function(index, value) {
+                        var word = index;
+                        var score = value;
+                        var size = (score / maxSize) * 18;
+                        mapping.push({ text: word, size: size });
+                    });
+                    goCloud(mapping);
+                    
+                } catch (e) { alert(e); }
+            }
+            
+            // d3 cloud
+            var fill = d3.scale.category20();
+            
+            function goCloud(wordMapping) {
+                d3.layout.cloud().size([525, 400])
+                    .words(wordMapping)
+                    .rotate(function() { return ~~(Math.random() * 180); })
+                    .font("Impact")
+                    .fontSize(function(d) { return d.size; })
+                    .on("end", draw)
+                    .start();
+            }
+            
+            function draw(words) {
+              d3.select("#cloud").append("svg")
+                  .attr("width", 525)
+                  .attr("height", 400)
+                .append("g")
+                  .attr("transform", "translate(262,200)")
+                .selectAll("text")
+                  .data(words)
+                .enter().append("text")
+                  .style("font-size", function(d) { return d.size + "px"; })
+                  .style("font-family", "Impact")
+                  .style("fill", function(d, i) { return fill(i); })
+                  .attr("text-anchor", "middle")
+                  .attr("transform", function(d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                  })
+                  .text(function(d) { return d.text; });
+            }
+
             
         </script>
         
@@ -94,7 +157,7 @@
         <ul class="breadcrumb">
             <li><a href="champion.html">Champion</a> <span class="divider">/</span></li>
             <li><a href="search.html">Search</a> <span class="divider">/</span></li>
-            <li class="active"><a href="#">Result</a></li>
+            <li class="active"><a href="#">Result for <span class="name">MP</span></a></li>
         </ul>
 
         <!-- the searching spinner -->
@@ -120,40 +183,49 @@
         
         <div class="row-fluid">
             <div class="span8 padded">
-                <div class="hero-unit">
+                <div class="well">
                     <div class="row-fluid">
-                        <div class="span6" style="text-align: center;">
-                            <div class="polaroid">
+                        <div class="span12">
+                            
+                            <div class="polaroid pull-left" style="width: 220px; margin-right: 45px; margin-top: 45px;">
                                 <p><span class="name" /></p>
                                 <img src="images/user_256x256.png" class="photo" id="photo" />
                             </div>
-                        </div>
-                        <div class="span6">
+
                             <h1>
                                 <span class="name">Name</span>
                                 <small><span class="constituency">Constituency</span></small>
                             </h1>
+
                             <p>Most recently elected on <span id="enteredhouse">(date)</span></p>
                             <p>
                                 <a href="#" id="open-twfy-btn" class="btn disabled">
                                     <i class="icon-globe"></i> They work for you...
                                 </a>
                             </p>
+
+                            <div id="cloud" style="margin-top: 30px;"></div>
+
                         </div>
-                    </div>
+
+                    </div><!-- /inner row -->
+
                 </div>
-                
             </div>
             
             <div class="span4 padded">
 
                 <p><b>Expenses claimed in 2009: &pound;<span id="expenses2009">(sum)</span></b></p>
 
+                <p><b>Median wage in <span class="constituency">Constituency</span>: &pound;<span id="wage">(median wage)</span></b></p>
+
+                <p><b>Unemployment rate in <span class="constituency">Constituency</span>: <span id="unemployment">(unemployment)</span></b></p>
+                
                 <p><span class="name"></span> has written to the following departments:</p>
                 <p><b><span id="depts">(departments)</span></b></p>
                 <p>on the following topics:</p>
                 <p><b><span id="subjects">(topics)</span></b></p>
-                
+
             </div>
         </div><!-- /row -->
  

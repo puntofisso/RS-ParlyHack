@@ -49,16 +49,12 @@
                     
                 } catch (e) { alert(e); }
             }
-
-            function getMapping(word) {
-                return mapping[word];
-            }
             
             // d3 cloud
             var fill = d3.scale.category20();
             
             function goCloud(wordMapping) {
-                d3.layout.cloud().size([1200, 300])
+                d3.layout.cloud().size([600, 300])
                     .words(wordMapping)
                     .rotate(function() { return ~~(Math.random() * 180); })
                     .font("Impact")
@@ -69,10 +65,10 @@
             
             function draw(words) {
               d3.select("#cloud").append("svg")
-                  .attr("width", 1200)
+                  .attr("width", 600)
                   .attr("height", 300)
                 .append("g")
-                  .attr("transform", "translate(150,150)")
+                  .attr("transform", "translate(300,150)")
                 .selectAll("text")
                   .data(words)
                 .enter().append("text")
