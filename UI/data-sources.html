@@ -11,9 +11,14 @@
         <script src="js/jquery.center.js"></script>
         <script src="js/bootstrap.min.js"></script>
         
+        <!-- D3 -->
+        <script src="http://d3js.org/d3.v2.js"></script>
+        <script src="js/d3.layout.cloud.js"></script>
+        
         <!-- project js and css -->
         <script src="js/parly.js"></script>
         <link href="css/parly.css" rel="stylesheet" />
+        <script src="js/csv-reader.js"></script>
         
         <script>
             
@@ -25,6 +30,61 @@
                     window.location = 'search.html';
                 });
             });
+
+            $(function() {
+                try {
+                    retrieveCSV('aux-data/bluster.csv', dataReady);
+                } catch (e) { alert(e); }
+            });
+
+            function dataReady(table) {
+                try {
+                    var mapping = new Array();
+                    for (row = 0; row < table.length; row++) {
+                        var name = table[row][0] + ' ' + table[row][1];
+                        var size = (table[row][2] / 2761920) * 40;
+                        mapping[row] = { text: name, size: size };
+                    }
+                    goCloud(mapping);
+                    
+                } catch (e) { alert(e); }
+            }
+
+            function getMapping(word) {
+                return mapping[word];
+            }
+            
+            // d3 cloud
+            var fill = d3.scale.category20();
+            
+            function goCloud(wordMapping) {
+                d3.layout.cloud().size([1200, 300])
+                    .words(wordMapping)
+                    .rotate(function() { return ~~(Math.random() * 180) /* 90 */; })
+                    .font("Impact")
+                    .fontSize(function(d) { return d.size; })
+                    .on("end", draw)
+                    .start();
+            }
+            
+            function draw(words) {
+              d3.select("#cloud").append("svg")
+                  .attr("width", 1200)
+                  .attr("height", 300)
+                .append("g")
+                  .attr("transform", "translate(150,150)")
+                .selectAll("text")
+                  .data(words)
+                .enter().append("text")
+                  .style("font-size", function(d) { return d.size + "px"; })
+                  .style("font-family", "Impact")
+                  .style("fill", function(d, i) { return fill(i); })
+                  .attr("text-anchor", "middle")
+                  .attr("transform", function(d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                  })
+                  .text(function(d) { return d.text; });
+            }
             
         </script>
     </head>
@@ -50,6 +110,18 @@
 
             <div class="span4 padded">
                 <div class="well">
+                    <h4>Project source</h4>
+                    <p>
+                        The source for this project is available from GitHub:
+                    </p>
+                    <p>
+                        <code>git clone https://github.com/puntofisso/RS-ParlyHack.git</code>
+                    </p>
+                </div>
+            </div>
+
+            <div class="span4 padded">
+                <div class="well">
                     <h4>Debate data</h4>
                     <p>
                         The data source for speakers and their debate contributions
@@ -70,8 +142,35 @@
                     </p>
                 </div>
             </div>
+
+        </div><!-- /row -->
+        <div class="row-fluid">
             
-        </div>
+            <div class="span12 padded">
+                <div class="well">
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <h4>MPs bluster</h4>
+                            <p>
+                                Our first analysis featured a quick examination of just who's been talking
+                                and how much (by word count). Data for the top 50 most talky MPs is available
+                                as CSV <a href="aux-data/bluster.csv">here</a>.
+                            </p>
+                            
+                            <div class="alert alert-error">
+                                NB. This data features the top 50 speakers
+                                who do not have a middle name. We will be re-parsing and correcting
+                                our data shortly!
+                            </div>
+                        </div>
+                        <div class="span6 padded">
+                            <div id="cloud"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div><!-- /row -->
  
     </body>
 </html>

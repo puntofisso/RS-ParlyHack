@@ -3,20 +3,25 @@
  * successFunction(data): data is an Array[row][col]
  */
 function retrieveCSV(fileName, successFunction) {
-    $.ajax({
-        type: "GET",
-        url: fileName,
-        dataType: "text",
-        success: function(data) { successFunction(parseCSV(data)); }
-     });
+    try {
+
+        $.get(fileName, function(data) {
+            var parsed = parseCSV(data);
+            successFunction(parsed);
+        });
+    
+    } catch(e) { alert(e); }
 }
 
 function parseCSV(input) {
-    var lines = input.split("\t");
-    var data = new Array();
-    for (var i = 0; i < lines.length; i++) {
-        data.push(lines[i].split(","));
-    }
-    return data;
+    try {
+        var lines = input.split("\n");
+        var data = new Array();
+        for (var i = 0; i < lines.length; i++) {
+            var rowdata = lines[i].split(",");
+            data.push(rowdata);
+        }
+        return data;
+    } catch (e) { alert(e); }
+    return null;
 }
-
