@@ -13,6 +13,7 @@
         
         <!-- project js and css -->
         <script src="js/parly.js"></script>
+        <script src="js/champion-api.js"></script>
         <link href="css/parly.css" rel="stylesheet" />
 
         <script>
@@ -43,7 +44,13 @@
             function doSearch() {
                 try {
                     var interestsText = $('#interests').val();
+
                     var interests = interestsText.split(',');
+                    
+                    for (var i = 0; i < interests.length; i++) {
+                        interests[i] = $.trim(interests[i]);
+                    }
+                    
                     submitSearch(interests);
 
                 } catch (e) {
@@ -51,67 +58,95 @@
                     spinner(false);
                 }
             }
-            
+
             /**
              * Submits a search, interests is an Array of strings.
              **/
             function submitSearch(interests) {
                 spinner(true);
-                setTimeout(function() { addResults(getDummyResults()); }, 3000);
+
+                $.ajax({
+                  url: generate_search_URL(interests),
+                  dataType: 'json',
+                  success: function(data) { addResults(data); },
+                  error: function() { showNoResults(); console.log('Error');  spinner(false); }
+                });
+                //setTimeout(function() { addResults(getDummySearchResults()); }, 3000);
             }
 
-            function getDummyResults() {
-                var res = new Array();
-                
-                res[0] = new Object();
-                res[0].score = 90;
-                res[0].name = "Rumpold";
-                res[0].uid = '000001';
-                
-                res[1] = new Object();
-                res[1].score = 75;
-                res[1].name = "Winnie the Pooh";
-                res[1].uid = '000002';
-                
-                res[2] = new Object();
-                res[2].score = 45;
-                res[2].name = "Thomas the Tank Engine";
-                res[2].uid = '000003';
-                
-                return res;
+            function showNoResults() {
+                $("#results-table").fadeOut('fast');
+                $("#no-results").fadeIn('slow');
             }
             
+            //This will sort your array
+            function SortByTotal(a, b){
+              return ((a.MP_score_total > b.MP_score_total) ? -1 : ((a.MP_score_total < b.MP_score_total) ? 1 : 0));
+            }
+
             /**
              * result.score, result.name, result.uid
              **/
-            function addResults(results) {
+            function addResults(resultsRaw) {
+                
+                dumpResults(resultsRaw);
+                
                 if (searchCancelled) {
                     searchCancelled = false;
+                    spinner(false);
                     return;
                 }
-                
+
                 try {
-                    if (results.length == 0) {
-                        $("#results-table").fadeOut('fast');
-                        $("#no-results").fadeIn('slow');
+                    if (resultsRaw.length == 0) {
+                        showNoResults();
                         spinner(false);
                         return;
                     }
+
+                    var results = new Array();
+                    $.each(resultsRaw, function(index, value) {
+                        var newObj = new Object();
+                        newObj.MP_name = index;
+                        newObj.scores = value;
+                        var MP_score = 0;
+                        for (i in newObj.scores) {
+                            if (i != 'id') {
+                                MP_score += parseFloat(newObj.scores[i]);
+                            }
+                        }
+                        newObj.MP_score_total = MP_score;
+                        newObj.MP_id = newObj.scores['id'];
+                        results.push(newObj);
+                    });
+                                        
+                    results.sort(SortByTotal);
                     
-                    $.each(results, function(index, value) { 
-                        var barStyle = value.score > 49 ? 'bar-success' : 'bar-warning';
+                    $.each(results, function(index, value) {
+                        var MP_id = value.MP_id;
+                        var MP_score = value.MP_score_total;
+                        var MP_name = value.MP_name;
+                        console.log(MP_name + '(' + MP_id + '): ' + MP_score);
                         
-                        var row = '<tr id="result-' + value.uid +'">' +
+                        // normalise score - qqLGW tidy this up!
+                        // MAXIMUM score we've found: 2012
+                        // AVERAGE score: 5
+                        MP_score_normalised = (MP_score / 7.5) * 100;
+                        if (MP_score_normalised > 100) { MP_score_normalised == 100 }
+                        
+                        var barStyle = MP_score_normalised > 49 ? 'bar-success' : 'bar-warning';
+                        
+                        var row = '<tr id="result-' + MP_id +'">' +
                             '<td><div class="progress">' +
-                                '<div class="bar ' + barStyle +'" style="width: ' + value.score + '%;"></div>' +
+                                '<div class="bar ' + barStyle +'" style="width: ' + MP_score_normalised + '%;"></div>' +
                             '</div></td>' +
-                            '<td>' + value.name + '</td>' +
+                            '<td>' + MP_name + ' (' + parseInt(MP_score) + ')</td>' +
                             '<td><i class="icon-chevron-right pull-right"></i></td>' +
                             '</tr>';
                         $('#results-table').append(row);
                         
-                        $('#result-' + value.uid).attr('data-link', 'result.html?id=' + value.uid);
-                        $('#result-' + value.uid).click(function() {
+                        $('#result-' + MP_id).attr('data-link', 'result.html?uid=' + MP_id);
+                        $('#result-' + MP_id).click(function() {
                             window.location = $(this).attr('data-link');
                         });
                     });
@@ -205,12 +240,12 @@
                         
                         <div class="control-group">
                             <div class="controls">
-                                <button id="send-search" type="button" class="btn btn-primary btn-large">Search</button>
+                                <button id="send-search" type="submit" class="btn btn-primary btn-large" onclick="return false;">Search</button>
                             </div>
                         </div>
                     </fieldset>
                 </form>
-                    
+
             </div><!-- /left-half -->
             <div class="span6 padded">
                 

@@ -60,7 +60,7 @@
             function goCloud(wordMapping) {
                 d3.layout.cloud().size([1200, 300])
                     .words(wordMapping)
-                    .rotate(function() { return ~~(Math.random() * 180) /* 90 */; })
+                    .rotate(function() { return ~~(Math.random() * 180); })
                     .font("Impact")
                     .fontSize(function(d) { return d.size; })
                     .on("end", draw)
