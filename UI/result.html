@@ -116,10 +116,10 @@
             
             function draw(words) {
               d3.select("#cloud").append("svg")
-                  .attr("width", 525)
+                  .attr("width", 400)
                   .attr("height", 400)
                 .append("g")
-                  .attr("transform", "translate(262,200)")
+                  .attr("transform", "translate(200,200)")
                 .selectAll("text")
                   .data(words)
                 .enter().append("text")
