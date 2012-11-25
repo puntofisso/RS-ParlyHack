@@ -5,29 +5,21 @@
 function retrieveCSV(fileName, successFunction) {
     try {
 
-        var jqxhr = $.get(fileName, function() {
-            alert("success");
-        })
-            .success(function() { alert("second success"); })
-            .error(function() { alert("error"); })
-            .complete(function() { alert("complete"); });
-
-        /*    
         $.get(fileName, function(data) {
             var parsed = parseCSV(data);
-            successFunction(data);
+            successFunction(parsed);
         });
-        */
     
     } catch(e) { alert(e); }
 }
 
 function parseCSV(input) {
     try {
-        var lines = input.split("\t");
+        var lines = input.split("\n");
         var data = new Array();
         for (var i = 0; i < lines.length; i++) {
-            data.push(lines[i].split(","));
+            var rowdata = lines[i].split(",");
+            data.push(rowdata);
         }
         return data;
     } catch (e) { alert(e); }

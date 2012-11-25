@@ -33,29 +33,34 @@
 
             $(function() {
                 try {
-                    retrieveCSV('champion.html', dataReady);
-                    //qqLGW this doesn't work
+                    retrieveCSV('aux-data/bluster.csv', dataReady);
                 } catch (e) { alert(e); }
             });
 
             function dataReady(table) {
                 try {
-                    alert(table.length + ' rows');
+                    var mapping = new Array();
                     for (row = 0; row < table.length; row++) {
-                        
+                        var name = table[row][0] + ' ' + table[row][1];
+                        var size = (table[row][2] / 2761920) * 40;
+                        mapping[row] = { text: name, size: size };
                     }
+                    goCloud(mapping);
+                    
                 } catch (e) { alert(e); }
             }
 
+            function getMapping(word) {
+                return mapping[word];
+            }
+            
             // d3 cloud
             var fill = d3.scale.category20();
             
-            function goCloud(words, sizeMappingFunction) {
-                d3.layout.cloud().size([300, 300])
-                    .words(["Hello", "world", "normally", "you", "want", "more", "words", "than", "this"].map(function(d) {
-                      return {text: d, size: 10 + Math.random() * 90};
-                    }))
-                    .rotate(function() { return ~~(Math.random() * 2) * 90; })
+            function goCloud(wordMapping) {
+                d3.layout.cloud().size([1200, 300])
+                    .words(wordMapping)
+                    .rotate(function() { return ~~(Math.random() * 180) /* 90 */; })
                     .font("Impact")
                     .fontSize(function(d) { return d.size; })
                     .on("end", draw)
@@ -64,7 +69,7 @@
             
             function draw(words) {
               d3.select("#cloud").append("svg")
-                  .attr("width", 300)
+                  .attr("width", 1200)
                   .attr("height", 300)
                 .append("g")
                   .attr("transform", "translate(150,150)")
@@ -143,20 +148,29 @@
             
             <div class="span12 padded">
                 <div class="well">
-                    <h4>MPs bluster</h4>
-                    <p>
-                        Our first analysis featured a quick examination of just who's been talking
-                        and how much (by word count). Our data is available as CSV
-                        <a href="aux-data/bluster.csv">here</a>.
-                    </p>
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <h4>MPs bluster</h4>
+                            <p>
+                                Our first analysis featured a quick examination of just who's been talking
+                                and how much (by word count). Data for the top 50 most talky MPs is available
+                                as CSV <a href="aux-data/bluster.csv">here</a>.
+                            </p>
+                            
+                            <div class="alert alert-error">
+                                NB. This data features the top 50 speakers
+                                who do not have a middle name. We will be re-parsing and correcting
+                                our data shortly!
+                            </div>
+                        </div>
+                        <div class="span6 padded">
+                            <div id="cloud"></div>
+                        </div>
+                    </div>
                 </div>
-
-                <div id="cloud"></div>
-                
             </div>
             
-            
-        </div>
+        </div><!-- /row -->
  
     </body>
 </html>
