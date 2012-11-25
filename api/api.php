@@ -27,7 +27,7 @@ function searchMP($keys) {
 	$a = array();
 
 	foreach ($keysARR as $thiskey) {
-		$query = "SELECT name, id, x, keyword, sum(x) as summy, total, sum(x)/total*100 AS ratio from Keywords WHERE keyword='". $thiskey . "' group by keyword, name ORDER by ratio LIMIT 0,20";
+		$query = "SELECT name, id, x, keyword, sum(x) as summy, total, sum(x)/total*100 AS ratio from Keywords WHERE keyword='". $thiskey . "' group by keyword, name ORDER by x desc LIMIT 0,20";
 		$result = mySQLquery($query);
 
 		while($row = mysql_fetch_assoc( $result )) {
@@ -39,7 +39,8 @@ function searchMP($keys) {
 			$a[$name][$keyword] = $ratio;
 			$idarr = explode("/",$id);
 			$a[$name]["id"] = end($idarr);
-			$a[$name]["value"] = $value;
+			$a[$name][$keyword] = $value;
+			//$a[$name]["value"] = $value;
         	}	
 	}
 
