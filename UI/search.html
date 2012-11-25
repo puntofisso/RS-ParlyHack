@@ -105,6 +105,7 @@
                     }
 
                     var results = new Array();
+                    var maxTotal = 0;
                     $.each(resultsRaw, function(index, value) {
                         var newObj = new Object();
                         newObj.MP_name = index;
@@ -118,6 +119,8 @@
                         newObj.MP_score_total = MP_score;
                         newObj.MP_id = newObj.scores['id'];
                         results.push(newObj);
+                        
+                        if (MP_score > maxTotal) { maxTotal = MP_score; }
                     });
                                         
                     results.sort(SortByTotal);
@@ -131,7 +134,7 @@
                         // normalise score - qqLGW tidy this up!
                         // MAXIMUM score we've found: 2012
                         // AVERAGE score: 5
-                        MP_score_normalised = (MP_score / 7.5) * 100;
+                        MP_score_normalised = (MP_score / maxTotal) * 100;
                         if (MP_score_normalised > 100) { MP_score_normalised == 100 }
                         
                         var barStyle = MP_score_normalised > 49 ? 'bar-success' : 'bar-warning';
@@ -140,7 +143,7 @@
                             '<td><div class="progress">' +
                                 '<div class="bar ' + barStyle +'" style="width: ' + MP_score_normalised + '%;"></div>' +
                             '</div></td>' +
-                            '<td>' + MP_name + ' (' + parseInt(MP_score) + ')</td>' +
+                            '<td>' + MP_name + '</td>' +
                             '<td><i class="icon-chevron-right pull-right"></i></td>' +
                             '</tr>';
                         $('#results-table').append(row);

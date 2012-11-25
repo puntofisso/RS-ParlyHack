@@ -88,10 +88,12 @@
                         if (value > maxSize) { maxSize = value; }
                     });
                     
+                    console.log('maxSize: ' + maxSize);
+                    
                     $.each(data, function(index, value) {
                         var word = index;
                         var score = value;
-                        var size = (score / maxSize) * 18;
+                        var size = ((score / maxSize) * 32) + 8;
                         mapping.push({ text: word, size: size });
                     });
                     goCloud(mapping);
