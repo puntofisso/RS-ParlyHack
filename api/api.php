@@ -27,17 +27,19 @@ function searchMP($keys) {
 	$a = array();
 
 	foreach ($keysARR as $thiskey) {
-		$query = "SELECT name, id, keyword, sum(x) as summy, total, sum(x)/total*100 AS ratio from Keywords WHERE keyword='". $thiskey . "' group by keyword, name ORDER by ratio LIMIT 0,20";
+		$query = "SELECT name, id, x, keyword, sum(x) as summy, total, sum(x)/total*100 AS ratio from Keywords WHERE keyword='". $thiskey . "' group by keyword, name ORDER by ratio LIMIT 0,20";
 		$result = mySQLquery($query);
 
 		while($row = mysql_fetch_assoc( $result )) {
          		$name = $row['name'];
                	 	$keyword = $row['keyword'];
+ 			$value = $row['x'];
                		$ratio = $row['ratio'];
 			$id = $row['id'];
 			$a[$name][$keyword] = $ratio;
 			$idarr = explode("/",$id);
 			$a[$name]["id"] = end($idarr);
+			$a[$name]["value"] = $value;
         	}	
 	}
 
@@ -47,28 +49,33 @@ function searchMP($keys) {
 
 
 function queryTheyWorkForYou($id) {
-        // create curl resource 
-        $ch = curl_init(); 
+	$myout = array();
 
 	// get TWFYinfo
 	$pid =  getTWFYid($id);
 
-        // set url 
-	//$query = "http://www.theyworkforyou.com/api/getMP?id=".$pid."&key=CPmndLARaZ76DJLwuiB7ZqQ7";
+        // They Work for You main info
+        $ch = curl_init(); 
         curl_setopt($ch, CURLOPT_URL, "http://www.theyworkforyou.com/api/getMP?id=$pid&key=CPmndLARaZ76DJLwuiB7ZqQ7"); 
-
-        //return the transfer as a string 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
         $output = curl_exec($ch); 
         curl_close($ch);  
 	$arr = json_decode($output,true);
 
-	$myout = array();
+	// They Work for you extended info
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, "http://www.theyworkforyou.com/api/getMPinfo?id=$pid&key=CPmndLARaZ76DJLwuiB7ZqQ7");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch); 
+        $arr_ext = json_decode($output,true);
+
 
 	foreach ($arr as $entry) {
 		if (strstr($entry["left_house"],"9999")) {
 			$myout["lastname"] = $entry["last_name"];
 			$myout["firstname"] = $entry["first_name"];
+			$constituency = $entry["constituency"];
 			$myout["constituency"] = $entry["constituency"];
 			$myout["TWFYimage"] = $entry["image"];
 			$myout["TWFYid"] = $pid;
@@ -76,6 +83,32 @@ function queryTheyWorkForYou($id) {
 			//$myout[""] = $entry[""];
 		}
 	}
+
+
+	$query = "SELECT name, id, keyword, x from Keywords WHERE id='uk.org.publicwhip/member/" . $id . "' ORDER by x desc LIMIT 0,50";
+	$result = mySQLquery($query);
+	
+	$keywords = array();
+	while($row = mysql_fetch_assoc( $result )) {
+                $key = $row['keyword'];
+                $value = $row['x'];
+		$keywords[$key] = $value;
+        }
+
+	$myout['depts'] = $arr_ext["wrans_departments"];
+	$myout['subjects'] = $arr_ext["wrans_subjects"];
+	$myout['expenses2009'] = $arr_ext["expenses2009_total"];
+	$myout['keywords'] = $keywords;
+	
+
+	$query = "SELECT w.ConstituencyName as constituency, u.ConstRate as unemploymentrate, u.ConstNumber as unemploymentnumber, w.MedianWageConst as medianweeklywage from Wages w, Unemployment u where w.ConstituencyName = u.ConstituencyName and u.ConstituencyName='" . $constituency ."'";
+	$result = mySQLquery($query);
+	while ($row = mysql_fetch_assoc ( $result )) {
+		$myout['unemploymentrate'] = $row['unemploymentrate'];
+		$myout['unemploymentnumber'] = $row['unemploymentnumber'];
+		$myout['medianweeklywage'] = $row['medianweeklywage'];
+	}
+
 
 	return json_encode($myout);
 
