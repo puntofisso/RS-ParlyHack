@@ -27,15 +27,17 @@ function searchMP($keys) {
 	$a = array();
 
 	foreach ($keysARR as $thiskey) {
-		$query = "SELECT name, keyword, sum(x) as summy, total, sum(x)/total*100 AS ratio from Keywords WHERE keyword='". $thiskey . "' group by keyword, name ORDER by ratio LIMIT 0,20";
+		$query = "SELECT name, id, keyword, sum(x) as summy, total, sum(x)/total*100 AS ratio from Keywords WHERE keyword='". $thiskey . "' group by keyword, name ORDER by ratio LIMIT 0,20";
 		$result = mySQLquery($query);
 
 		while($row = mysql_fetch_assoc( $result )) {
          		$name = $row['name'];
                	 	$keyword = $row['keyword'];
                		$ratio = $row['ratio'];
-
+			$id = $row['id'];
 			$a[$name][$keyword] = $ratio;
+			$idarr = explode("/",$id);
+			$a[$name]["id"] = end($idarr);
         	}	
 	}
 
@@ -43,17 +45,6 @@ function searchMP($keys) {
 
 }
 
-function MPstats($id) {
-
-}
-
-function MPwordcloud($id) {
-
-}
-
-function MPinfo($id) {
-
-}
 
 function queryTheyWorkForYou($id) {
         // create curl resource 
