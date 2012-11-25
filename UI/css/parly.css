@@ -16,3 +16,29 @@ div.padded {
     -webkit-box-shadow: 5px 5px 10px #888;
     -moz-box-shadow: 5px 5px 10px #888;
 }
+
+.polaroid {
+    position: relative;
+    transform: rotate(-5deg);
+    -ms-transform: rotate(-5deg); /* IE 9 */
+    -webkit-transform: rotate(-5deg); /* Safari and Chrome */
+    -o-transform: rotate(-5deg); /* Opera */
+    -moz-transform: rotate(-5deg); /* Firefox */
+}
+ 
+.polaroid img {
+  border: 10px solid #fff;
+  border-bottom: 45px solid #fff;
+  -webkit-box-shadow: 3px 3px 3px #777;
+     -moz-box-shadow: 3px 3px 3px #777;
+          box-shadow: 3px 3px 3px #777;
+}
+ 
+.polaroid p {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  bottom: 0px;
+  font: 400 18px/1 'Kaushan Script', cursive;
+  color: #888;
+}
