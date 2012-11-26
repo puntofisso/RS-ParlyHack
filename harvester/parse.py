@@ -42,7 +42,7 @@ def parseXML(xmlFile):
         content = ""
         try:
             for text in text_nodes:
-                content = content + (text.text).encode('utf-8')
+                content = content + " \n" + (text.text).encode('utf-8')
         except Exception, err:
                 content = "ERROR"
         
