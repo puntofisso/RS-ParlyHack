@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>ParlyHack (Team: Whip)</title>
@@ -236,10 +237,23 @@
                             Your interests
                         </legend>
                         
+                        <div class="alert alert-success">
+                          <button type="button" class="close" data-dismiss="alert">&times;</button>
+                          <p><strong>How to search</strong></p>
+                          <p>
+                            Please note: Champion is in beta. We have indexed terms from the
+                            debates by their root. In order to search for a topic
+                            you care about, please type the word root.</p>
+                          <p>
+                            For instance, if you want us to find politicans who care about
+                            <b>nurses</b>, you should type: <b>nurse</b>.
+                          </p>
+                        </div>
+
                         <div class="control-group">
                           <label class="control-label" for="interests">Interests</label>
                           <div class="controls">
-                            <input type="text" id="interests" placeholder="interests,comma,separated" />
+                            <input type="text" class="large" id="interests" placeholder="interests,comma,separated"></input>
                           </div>
                         </div>
                         
