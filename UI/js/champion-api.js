@@ -1,5 +1,5 @@
 // Global variables
-var SERVER = "http://172.16.132.179:8888"
+var SERVER = "http://www.champion.puntofisso.net/api"
 var URL_GET_MP_DATA = SERVER + "/api/api.php?api=getMPinfo";
 var URL_GET_SEARCH = SERVER + "/api/api.php?api=searchMP";
 
