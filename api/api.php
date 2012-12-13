@@ -4,6 +4,8 @@
 //json_decode($output);
 //print_r(implode("\n",$output));
 
+include('config.php');
+
 $apicall=$_GET['api'];
 $keywords=$_GET['keywords'];
 $id = $_GET['uid'];
@@ -130,8 +132,8 @@ function getTWFYid($uid) {
 }
 
 function mySQLquery($query) {
-mysql_connect("localhost", "rewired", "rewired") or die(mysql_error());
-mysql_select_db("RS-ParlyHack") or die(mysql_error());
+mysql_connect($DB_HOST, $DB_USER, $DB_PASS) or die(mysql_error());
+mysql_select_db($DB_NAME) or die(mysql_error());
 
 $result = mysql_query("$query") or die(mysql_error());  
 
