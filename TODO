@@ -2,6 +2,7 @@ v 0.2
 API router
 xml file extractor for ukparse.kforge.net
 crontab extraction & parsing (& db cleaning)
+deploy script creating config.php
 
 v 0.3
 key & api auth for external users
