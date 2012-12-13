@@ -4,7 +4,7 @@
 //json_decode($output);
 //print_r(implode("\n",$output));
 
-include('config.php');
+include('../config/config.php');
 
 $apicall=$_GET['api'];
 $keywords=$_GET['keywords'];
