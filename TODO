@@ -7,4 +7,6 @@ deploy script creating config.php
 v 0.3
 key & api auth for external users
 lda topic model
+http://www.cs.princeton.edu/~blei/lda-c/
+http://radimrehurek.com/gensim/
 better measures of topic weighting
