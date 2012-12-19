@@ -3,6 +3,7 @@ API router
 xml file extractor for ukparse.kforge.net
 crontab extraction & parsing (& db cleaning)
 deploy script creating config.php
+lookahead
 
 v 0.3
 key & api auth for external users
