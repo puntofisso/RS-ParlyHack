@@ -19,6 +19,20 @@
 //header('Access-Control-Allow-Origin: *');
 //print $ret;
 
+function getTWFYid($uid) {
+	$query = "SELECT NAME, MEMBER_ID, PERSON_ID from MPs WHERE MEMBER_ID=" . $uid;
+	$result = mySQLquery($query);
+	
+	while($row = mysql_fetch_assoc( $result )) {
+		$name = $row['NAME'];
+		$member_id = $row['MEMBER_ID'];
+		$person_id = $row['PERSON_ID'];
+		// This is very Dirty, but we only need one and there should only be one
+		return $person_id;
+	}
+}
+
+
 function searchMP($keys) {
 
 
@@ -54,7 +68,6 @@ function queryTheyWorkForYou($id) {
 
 	// get TWFYinfo
 	$pid =  getTWFYid($id);
-
         // They Work for You main info
         $ch = curl_init(); 
         curl_setopt($ch, CURLOPT_URL, "http://www.theyworkforyou.com/api/getMP?id=$pid&key=CPmndLARaZ76DJLwuiB7ZqQ7"); 
@@ -115,23 +128,8 @@ function queryTheyWorkForYou($id) {
 
 	
 }
-
-function getTWFYid($uid) {
-	$query = "SELECT NAME, MEMBER_ID, PERSON_ID from MPs WHERE MEMBER_ID=" . $uid;
-	$result = mySQLquery($query);
-	
-	while($row = mysql_fetch_assoc( $result )) {
-		$name = $row['NAME'];
-		$member_id = $row['MEMBER_ID'];
-		$person_id = $row['PERSON_ID'];
-		// This is very Dirty, but we only need one and there should only be one
-		return $person_id;
-	}
-}
-
 function mySQLquery($query) {
 	include('../../config/config.php');
-
 mysql_connect($DB_HOST, $DB_USER, $DB_PASS) or die(mysql_error()." | HOST ".$DB_HOST." USER ".$DB_USER." PASS ".$DB_PASS ." NAME ".$DB_NAME." | Error on connect ");
 mysql_select_db($DB_NAME) or die(mysql_error()." | HOST ".$DB_HOST." USER ".$DB_USER." PASS ".$DB_PASS ." NAME ".$DB_NAME." | Error on select db ");
 

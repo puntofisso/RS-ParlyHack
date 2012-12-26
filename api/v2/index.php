@@ -4,7 +4,7 @@ require("Toro.php");
 
 class RootHandler {
     function get() {
-      echo "chaMPion API v. 2 DB_HOST $DB_HOST";
+      echo "chaMPion API v. 2";
     }
 }
 
@@ -18,23 +18,26 @@ class searchMPHandler {
 }
 
 class queryTheyWorkForYouHandler {
-    function get() {
-      echo "Hello, world";
+    function get($id) {
+      header('Access-Control-Allow-Origin: *');
+      print queryTheyWorkForYou($id);
     }
 }
 
 class getTWFYidHandler {
-    function get() {
-      echo "Hello, world";
+    function get($uid) {
+      header('Access-Control-Allow-Origin: *');
+      print getTWFYid($uid);
     }
 }
+
 
 
 
 
 Toro::serve(array(
     "/" => "RootHandler",
-    "/searchMP/:string" => "searchMPHandler",
-    "/queryTheyWorkForYou" => "queryTheyWorkForYouHandler",
-    "/getTWFYid" => "getTWFYidHandler",
+    "/searchMP/:alpha" => "searchMPHandler",
+    "/getTWFYid/:alpha" => "getTWFYidHandler",
+    "/queryTheyWorkForYou/:alpha" => "queryTheyWorkForYouHandler",
 ));
