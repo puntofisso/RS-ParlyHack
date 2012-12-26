@@ -4,6 +4,7 @@ import parse
 
 
 extractor = extract.TermExtractor()
+# TODO change this file list
 filelist = open('xmlfiles.txt','r').readlines()
 
 d = dict()

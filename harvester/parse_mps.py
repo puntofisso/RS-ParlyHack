@@ -4,6 +4,9 @@ import json
 import re
 import string
 #read mps, load url, parse resulting text
+#TODO download MPS from http://www.theyworkforyou.com/api/getMPs&key=************
+
+
 mps_text = open("all_mps", "r").read()
 
 
