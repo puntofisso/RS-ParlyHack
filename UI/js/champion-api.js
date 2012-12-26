@@ -1,14 +1,20 @@
 // Global variables
-var SERVER = "http://www.champion.puntofisso.net"
-var URL_GET_MP_DATA = SERVER + "/api/api.php?api=getMPinfo";
-var URL_GET_SEARCH = SERVER + "/api/api.php?api=searchMP";
+//var SERVER = "http://www.champion.puntofisso.net"
+var SERVER = "http://localhost:8888"
+//var URL_GET_MP_DATA = SERVER + "/api/v1/api.php?api=getMPinfo";
+//var URL_GET_SEARCH = SERVER + "/api/v1/api.php?api=searchMP";
+
+var URL_GET_MP_DATA = SERVER + "/api/v2/queryTheyWorkForYou";
+var URL_GET_SEARCH = SERVER + "/api/v2/searchMP";
+
 
 /**
  * Generates the appropriate search URL.
  * interests: an Array of strings
  **/
 function generate_search_URL(interests) {
-    var url = URL_GET_SEARCH + "&keywords=" + interests.join(",");
+    //var url = URL_GET_SEARCH + "&keywords=" + interests.join(",");
+    var url = URL_GET_SEARCH + "/" + interests.join(",");
     console.log(url);
     return url;
 }
@@ -17,7 +23,8 @@ function generate_search_URL(interests) {
  * Generates the appropriate MP details URL.
  **/
 function generate_MP_details_URL(id) {
-    var url = URL_GET_MP_DATA + "&uid=" + id;
+    //var url = URL_GET_MP_DATA + "&uid=" + id;
+    var url = URL_GET_MP_DATA + "/" + id;
     console.log(url);
     return url;
 }
