@@ -1,4 +1,6 @@
 #!/bin/sh
+
+# Set these to the actual ones in the system
 BASE_DIR="/Users/puntofisso/Desktop/DEV/chaMPion/RS-ParlyHack/"
 key="CPmndLARaZ76DJLwuiB7ZqQ7"
 DB_HOST="localhost"
