@@ -34,6 +34,7 @@ class getTWFYidHandler {
 class getAllUniqueKeywordsHandler {
     function get($seed) {
       //header('Access-Control-Allow-Origin: *');
+      //print $seed;
       print getAllUniqueKeywords($seed);
     }
 }

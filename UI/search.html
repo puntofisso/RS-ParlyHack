@@ -19,6 +19,7 @@
 
         <script>
             var searchCancelled = false;
+            var interests = 1;
             
             $(function() {
                 $('#send-search').click(function() {
@@ -30,17 +31,41 @@
                     searchCancelled = true;
                     spinner(false);
                 });
-                
-                $('#interests').typeahead(getTypeaheadWords);
-            });
 
+                addInterestField();
+            });
+            
+            function addInterestField() {
+                var id = ++interests;
+                var field_id = 'interest_' + id;
+                var html = '<input type="text" class="large" id="' + field_id + '" placeholder="interest"></input><br/>';
+                
+                $('#interest_fields').append(html);
+                
+                $('#' + field_id).typeahead({ source: getTypeaheadWords });
+                $('#' + field_id).one('focus', addInterestField);
+            }
+
+            function gatherInterestsArray() {
+                var res = new Array();
+                for (var i = 1; i <= interests; i++) {
+                    var field_id = 'interest_' + i;
+                    var field_val = $('#' + field_id).val();
+                    var field_val = $.trim(field_val);
+                    if (field_val.length > 0) {
+                        res.push(field_val);
+                    }
+                }
+                return res;
+            }
+            
             function getTypeaheadWords(query, process) {
                 if (query.length > 2) {
                     $.ajax({
                         url: generate_typeahead_url(query),
                         dataType: 'json',
-                        success: function(data) { process(data); },
-                        error: function() { alert('blew it!'); }
+                        success: function(data) { console.log(data); process(removeNulls(data)); },
+                        error: function() { console.log('Failed to retrieve typeahead.'); }
                     });
                 }
             }
@@ -58,14 +83,8 @@
              **/
             function doSearch() {
                 try {
-                    var interestsText = $('#interests').val();
-
-                    var interests = interestsText.split(',');
-                    
-                    for (var i = 0; i < interests.length; i++) {
-                        interests[i] = $.trim(interests[i]);
-                    }
-                    
+                    var interests = gatherInterestsArray();
+                    console.log(interests);
                     submitSearch(interests);
 
                 } catch (e) {
@@ -80,8 +99,10 @@
             function submitSearch(interests) {
                 spinner(true);
 
+                var url_gen = generate_search_URL(interests);
+                
                 $.ajax({
-                  url: generate_search_URL(interests),
+                  url: url_gen,
                   dataType: 'json',
                   success: function(data) { addResults(data); },
                   error: function() { showNoResults(); console.log('Error');  spinner(false); }
@@ -221,7 +242,7 @@
 
                 <!-- introduction -->
                 <div class="hero-unit">
-                  <h1>Find your Champion</h1>
+                  <h1>Your Champion</h1>
                   <p>
                     Tell us about your interests to help us
                     find your Champion in Parliament.
@@ -264,8 +285,7 @@
 
                         <div class="control-group">
                           <label class="control-label" for="interests">Interests</label>
-                          <div class="controls">
-                            <input type="text" class="large" id="interests" placeholder="interests,comma,separated"></input>
+                          <div class="controls" id="interest_fields">
                           </div>
                         </div>
                         
