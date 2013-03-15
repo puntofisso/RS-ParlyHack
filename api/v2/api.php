@@ -32,6 +32,17 @@ function getTWFYid($uid) {
 	}
 }
 
+function getAllUniqueKeywords() {
+	$query = "SELECT DISTINCT keyword from keywords";
+	$result = mySQLquery($query);
+	
+	$answer = array();
+	while($row = mysql_fetch_assoc( $result )) {
+		$answer[] = $row['keyword']; // this is a push operation. PHP!
+	}
+	
+	return json_encode($answer);
+}
 
 function searchMP($keys) {
 

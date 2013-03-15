@@ -31,13 +31,17 @@ class getTWFYidHandler {
     }
 }
 
-
-
-
+class getAllUniqueKeywordsHandler {
+    function get() {
+      header('Access-Control-Allow-Origin: *');
+      print getAllUniqueKeywords();
+    }
+}
 
 Toro::serve(array(
     "/" => "RootHandler",
     "/searchMP/:alpha" => "searchMPHandler",
     "/getTWFYid/:alpha" => "getTWFYidHandler",
     "/queryTheyWorkForYou/:alpha" => "queryTheyWorkForYouHandler",
+    "/getAllUniqueKeywords/:alpha" => "getAllUniqueKeywordsHandler",
 ));
