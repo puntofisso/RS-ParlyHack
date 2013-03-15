@@ -6,7 +6,7 @@ var SERVER = "http://localhost:8888"
 
 var URL_GET_MP_DATA = SERVER + "/api/v2/queryTheyWorkForYou";
 var URL_GET_SEARCH = SERVER + "/api/v2/searchMP";
-
+var URL_GET_TYPEAHEAD = SERVER + "/api/v2/getAllUniqueKeywords";
 
 /**
  * Generates the appropriate search URL.
@@ -25,6 +25,12 @@ function generate_search_URL(interests) {
 function generate_MP_details_URL(id) {
     //var url = URL_GET_MP_DATA + "&uid=" + id;
     var url = URL_GET_MP_DATA + "/" + id;
+    console.log(url);
+    return url;
+}
+
+function generate_typeahead_url(seed) {
+    var url = URL_GET_TYPEAHEAD + "/" + seed;
     console.log(url);
     return url;
 }

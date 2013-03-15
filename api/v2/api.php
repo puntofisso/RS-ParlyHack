@@ -32,8 +32,8 @@ function getTWFYid($uid) {
 	}
 }
 
-function getAllUniqueKeywords() {
-	$query = "SELECT DISTINCT keyword from keywords";
+function getAllUniqueKeywords($seed) {
+	$query = "SELECT DISTINCT keyword from Keywords where keyword LIKE '%" . $seed . "%'";
 	$result = mySQLquery($query);
 	
 	$answer = array();

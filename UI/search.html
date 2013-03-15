@@ -30,8 +30,21 @@
                     searchCancelled = true;
                     spinner(false);
                 });
+                
+                $('#interests').typeahead(getTypeaheadWords);
             });
 
+            function getTypeaheadWords(query, process) {
+                if (query.length > 2) {
+                    $.ajax({
+                        url: generate_typeahead_url(query),
+                        dataType: 'json',
+                        success: function(data) { process(data); },
+                        error: function() { alert('blew it!'); }
+                    });
+                }
+            }
+            
             /**
              * Removes all rows except the header.
              **/

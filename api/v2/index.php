@@ -12,29 +12,29 @@ class RootHandler {
 // $keywords = comma-separated list of keywords
 class searchMPHandler {
     function get($keywords) {
-      header('Access-Control-Allow-Origin: *');
+      //header('Access-Control-Allow-Origin: *');
       print searchMP($keywords);
     }
 }
 
 class queryTheyWorkForYouHandler {
     function get($id) {
-      header('Access-Control-Allow-Origin: *');
+      //header('Access-Control-Allow-Origin: *');
       print queryTheyWorkForYou($id);
     }
 }
 
 class getTWFYidHandler {
     function get($uid) {
-      header('Access-Control-Allow-Origin: *');
+      //header('Access-Control-Allow-Origin: *');
       print getTWFYid($uid);
     }
 }
 
 class getAllUniqueKeywordsHandler {
-    function get() {
-      header('Access-Control-Allow-Origin: *');
-      print getAllUniqueKeywords();
+    function get($seed) {
+      //header('Access-Control-Allow-Origin: *');
+      print getAllUniqueKeywords($seed);
     }
 }
 
