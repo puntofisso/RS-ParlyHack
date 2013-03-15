@@ -5,6 +5,18 @@ div.padded {
     padding-bottom: 5px;
 }
 
+.slightly-padded {
+    margin-bottom: 3px;
+}
+
+.chatter-heading {
+    font-weight: bold;
+    color: Blue;
+}
+.chatter-subheading {
+    color: ForestGreen;
+}
+
 .shadow-box {
     -moz-box-shadow: 0 0 5px #888;
     -webkit-box-shadow: 0 0 5px #888;
@@ -25,7 +37,7 @@ div.padded {
     -o-transform: rotate(-5deg); /* Opera */
     -moz-transform: rotate(-5deg); /* Firefox */
 }
- 
+
 .polaroid img {
   border: 10px solid #fff;
   border-bottom: 45px solid #fff;

@@ -38,7 +38,7 @@
             function addInterestField() {
                 var id = ++interests;
                 var field_id = 'interest_' + id;
-                var html = '<input type="text" class="large" id="' + field_id + '" placeholder="interest"></input><br/>';
+                var html = '<input type="text" class="large slightly-padded" id="' + field_id + '" placeholder="interest"></input><br/>';
                 
                 $('#interest_fields').append(html);
                 
@@ -83,9 +83,9 @@
              **/
             function doSearch() {
                 try {
-                    var interests = gatherInterestsArray();
-                    console.log(interests);
-                    submitSearch(interests);
+                    var keywords = gatherInterestsArray();
+                    console.log(keywords);
+                    submitSearch(keywords);
 
                 } catch (e) {
                     alert(e);
@@ -96,10 +96,10 @@
             /**
              * Submits a search, interests is an Array of strings.
              **/
-            function submitSearch(interests) {
+            function submitSearch(keywords) {
                 spinner(true);
 
-                var url_gen = generate_search_URL(interests);
+                var url_gen = generate_search_URL(keywords);
                 
                 $.ajax({
                   url: url_gen,
@@ -159,6 +159,8 @@
                     });
                                         
                     results.sort(SortByTotal);
+
+                    var keywords = gatherInterestsArray();
                     
                     $.each(results, function(index, value) {
                         var MP_id = value.MP_id;
@@ -183,7 +185,7 @@
                             '</tr>';
                         $('#results-table').append(row);
                         
-                        $('#result-' + MP_id).attr('data-link', 'result.html?uid=' + MP_id);
+                        $('#result-' + MP_id).attr('data-link', 'result.html?uid=' + MP_id + '&keywords=' + keywords);
                         $('#result-' + MP_id).click(function() {
                             window.location = $(this).attr('data-link');
                         });

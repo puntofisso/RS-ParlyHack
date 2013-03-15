@@ -8,14 +8,25 @@ var SERVER = "http://www.championtest.puntofisso.net"
 var URL_GET_MP_DATA = SERVER + "/api/v2/queryTheyWorkForYou";
 var URL_GET_SEARCH = SERVER + "/api/v2/searchMP";
 var URL_GET_TYPEAHEAD = SERVER + "/api/v2/getAllUniqueKeywords";
+var URL_GET_CHATTER = SERVER + "/api/v2/getMPKeywords";
 
 /**
  * Generates the appropriate search URL.
  * interests: an Array of strings
  **/
 function generate_search_URL(interests) {
-    //var url = URL_GET_SEARCH + "&keywords=" + interests.join(",");
     var url = URL_GET_SEARCH + "/" + interests.join(",");
+    console.log(url);
+    return url;
+}
+
+/**
+ * Generates the appropriate URL for retrieving MP chatter.
+ * mpID: the ID of the MP to retrieve speeches from
+ * keyword: the keyword to filter for
+ **/
+function generate_chatter_URL(mpID, keyword) {
+    var url = URL_GET_CHATTER + "/uk.org.publicwhip/member/" + mpID + "-" + keyword;
     console.log(url);
     return url;
 }

@@ -26,27 +26,101 @@
             $(function() {
                 var vars = getUrlVars();
                 var id = vars['uid'];
+                var keywords = vars['keywords'];
                 
                 $('#cancelretrieve').click(function() {
                     window.location = 'search.html';
                 });
                 
-                retrieveMPdata(id);
+                retrieveMPdata(id, keywords);
             });
 
-            function retrieveMPdata(id) {
+            function retrieveMPdata(id, keywords) {
                spinner(true);
                 
                 $.ajax({
-                  url: generate_MP_details_URL(id),
-                  dataType: 'json',
-                  success: function(data) { spinner(false); showResults(data); },
-                  error: function() { console.log('Error'); spinner(false); showErrorMsg(); }
+                    url: generate_MP_details_URL(id),
+                    dataType: 'json',
+                    success: function(data) { spinner(false); showResults(data); },
+                    error: function() { console.log('Error'); spinner(false); showErrorMsg(); }
                 });
+
+                var keywordsArray = keywords.split(',');                
+                for (i = 0; i < keywordsArray.length; i++) {
+                    var keyword = keywordsArray[i];
+                    $.ajax({
+                        url: generate_chatter_URL(id, keyword),
+                        dataType: 'json',
+                        success: function(data) { showChatter(data); },
+                        error: function() { console.log('Error retrieving chatter.'); showChatterError(); }
+                    })
+                }
             }
             
             function showErrorMsg() {
                 $('#error-message').show();
+            }
+            function showChatterError() {
+                $('#chatter-error-message').show();
+            }
+            
+            function showChatter(data) {
+                for (i = 0; i < data.length; i++) {
+                    
+                    var sentences = data[i]['content'].split('.');
+                    var sentenceId = -1;
+                    for (s = 0; s < sentences.length; s++) {
+                        if (sentences[s].indexOf(data[i]['keyword']) != -1) {
+                            sentenceId = s;
+                            break;
+                        }
+                    }
+                    
+                    if (sentenceId > -1) {
+                        var entry = '';
+                        entry += '<div class="chatter-entry">';
+                        entry += '<span class="chatter-heading">Keyword: ' + data[i]['keyword'] + '</span> ';
+                        
+                        entry += '<input id="showbtn' + i + '" type="button" value="Show..." onclick="showFullChat(' + i + ');" />';
+                        entry += '<input id="hidebtn' + i + '" type="button" style="display: none;" value="Hide..." onclick="hideFullChat(' + i + ');" />';
+                        entry += '<br/>';
+                        
+                        entry += '<span class="chatter-subheading">' + data[i]['filename'] + '</span><br/>';
+                        
+                        entry += '<p class="chatter" id="shortened' + i + '">... ' + sentences[sentenceId] + ' ...</p>';
+                        entry += '<p class="chatter" id="full' + i + '" style="display: none;">' + data[i]['content'] + '</p>';
+
+                        entry += '</div>';
+                    }
+                    
+                    $('#chatter').append(entry);
+                }
+            }
+
+            function showFullChat(id) {
+                var shortened = 'shortened' + id;
+                var longform = 'full' + id;
+                var showbtn = 'showbtn' + id;
+                var hidebtn = 'hidebtn' + id;
+                
+                $('#' + shortened).hide();
+                $('#' + longform).show();
+                
+                $('#' + showbtn).hide();
+                $('#' + hidebtn).show();
+            }
+
+            function hideFullChat(id) {
+                var shortened = 'shortened' + id;
+                var longform = 'full' + id;
+                var showbtn = 'showbtn' + id;
+                var hidebtn = 'hidebtn' + id;
+                
+                $('#' + shortened).show();
+                $('#' + longform).hide();
+                
+                $('#' + showbtn).show();
+                $('#' + hidebtn).hide();
             }
             
             function showResults(data) {
@@ -63,6 +137,8 @@
                 var MP_expenses2009 = data['expenses2009'];
                 var MP_median_wage = data['medianweeklywage'];
                 var MP_unemploymentrate = data['unemploymentrate'];
+                
+                MP_unemploymentrate = Number(MP_unemploymentrate).toFixed(3);
                 
                 $('#photo').attr('src', MP_img_url);
                 $('span.name').text(MP_name);
@@ -135,6 +211,7 @@
             }
 
             
+        
         </script>
         
         <style>
@@ -184,39 +261,40 @@
             Please try again by hitting refresh.
         </div>
         
+        <div class="alert alert-warn" id="chatter-error-message" style="display: none;">
+            An error occurred retrieving speech data for this MP.
+            Please try again by hitting refresh.
+        </div>
+        
         <div class="row-fluid">
             <div class="span8 padded">
-                <div class="well">
-                    <div class="row-fluid">
-                        <div class="span12">
-                            
-                            <div class="polaroid pull-left" style="width: 220px; margin-right: 45px; margin-top: 45px;">
-                                <p><span class="name" /></p>
-                                <img src="images/user_256x256.png" class="photo" id="photo" />
-                            </div>
 
-                            <h1>
-                                <span class="name">Name</span>
-                                <small><span class="constituency">Constituency</span></small>
-                            </h1>
-
-                            <p>Most recently elected on <span id="enteredhouse">(date)</span></p>
-                            <p>
-                                <a href="#" id="open-twfy-btn" class="btn disabled">
-                                    <i class="icon-globe"></i> They work for you...
-                                </a>
-                            </p>
-
-                            <div id="cloud" style="margin-top: 30px;"></div>
-
-                        </div>
-
-                    </div><!-- /inner row -->
-
+                <div class="polaroid pull-left" style="width: 220px; margin-left: 30px; margin-right: 45px; margin-top: 45px;">
+                    <p><span class="name" /></p>
+                    <img src="images/user_256x256.png" class="photo" id="photo" />
                 </div>
+
+                <div class="well">
+                    <h1>
+                        <span class="name">Name</span>
+                        <small><span class="constituency">Constituency</span></small>
+                    </h1>
+
+                    <p>Most recently elected on <span id="enteredhouse">(date)</span></p>
+                    <p>
+                        <a href="#" id="open-twfy-btn" class="btn disabled">
+                            <i class="icon-globe"></i> They work for you...
+                        </a>
+                    </p>
+                </div>
+
+                <div id="chatter">
+                </div>
+                            
             </div>
             
             <div class="span4 padded">
+            <div class="well">
 
                 <p><b>Expenses claimed in 2009: &pound;<span id="expenses2009">(sum)</span></b></p>
 
@@ -229,6 +307,10 @@
                 <p>on the following topics:</p>
                 <p><b><span id="subjects">(topics)</span></b></p>
 
+            </div>
+            
+            <div id="cloud" style="margin-top: 30px;"></div>
+            
             </div>
         </div><!-- /row -->
  
